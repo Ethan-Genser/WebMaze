@@ -1,0 +1,24 @@
+html, body {
+    width: 100%;
+}
+
+#header {
+    color: #ffffff;
+    background-color: #17589c;
+}
+
+.header-item {
+    height: 100%;
+    vertical-align: middle;
+    text-align: left;
+    padding: 4px 40px 4px 10px
+}
+
+#title {
+    margin: 0 0 5px 0;
+    font-size: 18pt;
+}
+
+#algorithm-select {
+    padding: 10px 0 10px 0;
+}
