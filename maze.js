@@ -22,12 +22,15 @@ $(document).ready(() => {
         speed = MAX_DELAY - speedRange.value;
     };
 
-    runButton.addEventListener("click", () => {
+    runButton.onclick = function() {
+        runButton.disabled = true;
+        sizeRange.disabled = true;
+        drawGrid();
         let algorithm = algorithmSelect.value;
         size = sizeRange.value;
         speed = MAX_DELAY - speedRange.value;
         generateMaze(algorithm);
-    })
+    };
 
     function drawGrid() {
         table.innerHTML = "";
@@ -95,8 +98,11 @@ $(document).ready(() => {
 
                 setTimeout(loop, speed);
             }
+            // Maze is completed
             else {
                 paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
+                runButton.disabled = false;
+                sizeRange.disabled = false;
                 return;
             }
         }
