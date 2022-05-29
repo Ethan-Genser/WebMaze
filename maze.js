@@ -6,10 +6,13 @@ $(document).ready(() => {
     var speedRange = document.getElementById("speed-range");
     var sizeRange = document.getElementById("size-range");
     var runButton = document.getElementById("run-button");
+    var pauseButton = document.getElementById("pause-button");
     var table = document.getElementById("maze-grid");
 
     var size = 12;
     var speed = 200;
+    var isRunning = false;
+    var isPaused = false;
 
     drawGrid();
 
@@ -23,14 +26,27 @@ $(document).ready(() => {
     };
 
     runButton.onclick = function() {
-        runButton.disabled = true;
+        runButton.style.display = "none";
+        pauseButton.style.display = "inline";
         sizeRange.disabled = true;
-        drawGrid();
-        let algorithm = algorithmSelect.value;
-        size = sizeRange.value;
-        speed = MAX_DELAY - speedRange.value;
-        generateMaze(algorithm);
+        isPaused = false;
+
+        if (!isRunning) {
+            isRunning = true;
+
+            drawGrid();
+            let algorithm = algorithmSelect.value;
+            size = sizeRange.value;
+            speed = MAX_DELAY - speedRange.value;
+            generateMaze(algorithm);
+        }
     };
+
+    pauseButton.onclick = function() {
+        runButton.style.display = "inline";
+        pauseButton.style.display = "none";
+        isPaused = true;
+    }
 
     function drawGrid() {
         table.innerHTML = "";
@@ -38,7 +54,7 @@ $(document).ready(() => {
         for (let y = 0; y < size; y++) {
             let row = table.insertRow(0);
             for (let x = 0; x < size; x++) {
-                row.insertCell(0);
+                let cell = row.insertCell(0);
             }
         }
     }
@@ -46,8 +62,7 @@ $(document).ready(() => {
     function generateMaze(algorithm) {
         switch(algorithm) {
             case RECURSIVE_BACKTRACKING:
-                let cells = RecusiveBacktracking();
-                paintMaze(cells);
+                RecusiveBacktracking();
                 break;
         }
     }
@@ -76,33 +91,36 @@ $(document).ready(() => {
     
         function loop() {
             if (unvisitedCount > 0) {
-                let unvisitedNeighbors = getUnivistedNeighbors(currentCell.x, currentCell.y);
-        
-                // Exploring new cells
-                if (unvisitedNeighbors.length > 0) {
-                    let nextCell = unvisitedNeighbors[Math.floor(Math.random() * unvisitedNeighbors.length)];
-                    stack.push(currentCell);
-                    removeWallsBetween(currentCell, nextCell);
-                    paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
-                    paintCell(nextCell.x, nextCell.y, "#00c483", cells[currentCell.x][currentCell.y]);
-                    currentCell = nextCell;
-                    cells[currentCell.x][currentCell.y].visited = true;
-                    unvisitedCount--;
+                if (!isPaused) {
+                    let unvisitedNeighbors = getUnivistedNeighbors(currentCell.x, currentCell.y);
+            
+                    // Exploring new cells
+                    if (unvisitedNeighbors.length > 0) {
+                        let nextCell = unvisitedNeighbors[Math.floor(Math.random() * unvisitedNeighbors.length)];
+                        stack.push(currentCell);
+                        removeWallsBetween(currentCell, nextCell);
+                        paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
+                        paintCell(nextCell.x, nextCell.y, "#00c483", cells[currentCell.x][currentCell.y]);
+                        currentCell = nextCell;
+                        cells[currentCell.x][currentCell.y].visited = true;
+                        unvisitedCount--;
+                    }
+                    // Backtracking
+                    else {
+                        paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
+                        currentCell = stack.pop();
+                        paintCell(currentCell.x, currentCell.y, "#00c483", cells[currentCell.x][currentCell.y]);
+                    }
                 }
-                // Backtracking
-                else {
-                    paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
-                    currentCell = stack.pop();
-                    paintCell(currentCell.x, currentCell.y, "#00c483", cells[currentCell.x][currentCell.y]);
-                }
-
                 setTimeout(loop, speed);
             }
             // Maze is completed
             else {
                 paintCell(currentCell.x, currentCell.y, "#00c48356", cells[currentCell.x][currentCell.y]);
-                runButton.disabled = false;
+                runButton.style.display = "inline";
+                pauseButton.style.display = "none";
                 sizeRange.disabled = false;
+                isRunning = false;
                 return;
             }
         }
@@ -158,31 +176,33 @@ $(document).ready(() => {
     }
     
     function paintCell(x, y, color, borders) {
-        table.rows[y].cells[x].style.backgroundColor = color;
+        let cellStyle = table.rows[y].cells[x].style;
+
+        cellStyle.backgroundColor = color;
 
         if (borders.top) {
-            table.rows[y].cells[x].style.borderTop = "1px solid #000000";
+            cellStyle.borderTop = "1px solid #000000";
         }
         else {
-            table.rows[y].cells[x].style.borderTop = "1px solid #00000000";
+            cellStyle.borderTop = "1px solid #00000000";
         }
         if (borders.right) {
-            table.rows[y].cells[x].style.borderRight = "1px solid #000000";
+            cellStyle.borderRight = "1px solid #000000";
         }
         else {
-            table.rows[y].cells[x].style.borderRight = "1px solid #00000000";
+            cellStyle.borderRight = "1px solid #00000000";
         }
         if (borders.bottom) {
-            table.rows[y].cells[x].style.borderBottom = "1px solid #000000";
+            cellStyle.borderBottom = "1px solid #000000";
         }
         else {
-            table.rows[y].cells[x].style.borderBottom = "1px solid #00000000";
+            cellStyle.borderBottom = "1px solid #00000000";
         }
         if (borders.left) {
-            table.rows[y].cells[x].style.borderLeft = "1px solid #000000";
+            cellStyle.borderLeft = "1px solid #000000";
         }
         else {
-            table.rows[y].cells[x].style.borderLeft = "1px solid #00000000";
+            cellStyle.borderLeft = "1px solid #00000000";
         }
     }
 });

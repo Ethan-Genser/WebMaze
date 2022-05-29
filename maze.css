@@ -19,9 +19,16 @@ p {
     padding: 4px 30px 4px 30px
 }
 
+.header-button {
+    height: 100%;
+    vertical-align: middle;
+    padding: 4px 10px 4px 10px
+}
+
 #title {
     margin: 0 0 5px 0;
     font-size: 18pt;
+    font-weight: bold;
 }
 
 select {
@@ -42,7 +49,6 @@ select {
 
 #maze-grid td {
     border: #d3d3d3 1px solid;
-    
 }
 
 #maze-center {
@@ -55,9 +61,22 @@ select {
     background-color: #d3d3d3;
 }
 
-#run-button {
+button {
     padding: 10px 20px 10px 20px;
     border-radius: 8px;
-    background-color: #A9EBD5;
+    background-color: #80e6c4;
     border: 1px solid #767676;
+}
+
+button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+#buttons-table {
+    margin: 0 0 0 auto;
+}
+
+#pause-button {
+    display: none;
 }
