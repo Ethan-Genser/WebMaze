@@ -81,3 +81,9 @@ button:disabled {
 #pause-button {
     display: none;
 }
+
+.license {
+    margin: 10px 10% 0 10%;
+    font-style: italic;
+    color: #b1b1b1;
+}
